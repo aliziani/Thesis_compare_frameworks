@@ -20,6 +20,8 @@ export class Todo {
 	}
 }
 
+const localeStorageKey: string = "angular-todos";
+
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,7 @@ export class TodostoreService {
   todos: Array<Todo>;
 
 	constructor() {
-		let persistedTodos = JSON.parse(localStorage.getItem('angular2-todos') || '[]');
+		let persistedTodos = JSON.parse(localStorage.getItem(localeStorageKey) || '[]');
 		// Normalize back into classes
 		this.todos = persistedTodos.map( (todo: {_title: String, completed: Boolean}) => {
 			let ret = new Todo(todo._title);
@@ -38,7 +40,7 @@ export class TodostoreService {
 	}
 
 	private updateStore() {
-		localStorage.setItem('angular-todos', JSON.stringify(this.todos));
+		localStorage.setItem(localeStorageKey, JSON.stringify(this.todos));
 	}
 
 	private getWithCompleted(completed: Boolean) {

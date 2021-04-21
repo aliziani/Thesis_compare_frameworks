@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import {TodostoreService, Todo} from '../services/todostore.service';
 
 @Component({
@@ -11,15 +12,49 @@ export class TodoComponent implements OnInit {
   public newTodoText = '';
   public editedTodo?: Todo;
   public toggleall: boolean;
+  public visibility: String;
+  public filters: Map<String, Function>;
 
-  constructor(todoStore: TodostoreService) {
+  get filteredTodos() {
+	var filterFct = this.filters.get(this.visibility);
+	if(filterFct)
+	{
+		return filterFct(this.todoStore.todos);		
+	}
+	return this.todoStore.todos;
+ }
+
+  constructor(todoStore: TodostoreService,public route: ActivatedRoute) {
 		this.todoStore = todoStore;
-    this.toggleall = true;
-    this.editedTodo = undefined;
+		this.toggleall = true;
+		this.editedTodo = undefined;
+		this.visibility = "all";
+		this.filters = new Map<String, Function>(
+			[
+				["all", function (todos: Array<Todo>) {
+					return todos;
+				}],
+				["active", function (todos: Array<Todo>) {
+					return todos.filter(function (todo) {
+						return !todo.completed;
+					});
+				}],
+				["completed", function (todos: Array<Todo>) {
+					return todos.filter(function (todo) {
+						return todo.completed;
+					});
+				}]
+			]
+		)
 	}
 
-  ngOnInit(): void {
-  }
+	ngOnInit() {
+		  this.route.queryParams.subscribe(
+			params => {
+				this.initVisibility();
+			}
+		  )
+	  }
 
 	stopEditing(todo: Todo, editedTitle: string) {
 		todo.title = editedTitle;
@@ -39,6 +74,14 @@ export class TodoComponent implements OnInit {
 		}
 
 		todo.title = editedTitle;
+	}
+
+	routeIs(targetVisibility: String){
+		console.log("query params",this.route.snapshot.queryParams);
+		console.log("visibility target", targetVisibility);
+		
+		return  ( Object.keys(this.route.snapshot.queryParams).length === 0 && targetVisibility == "") || 
+				this.route.snapshot.queryParams.visibility == targetVisibility;
 	}
 
 	editTodo(todo: Todo) {
@@ -62,6 +105,16 @@ export class TodoComponent implements OnInit {
 			this.todoStore.add(this.newTodoText);
 			this.newTodoText = '';
 		}
+	}
+
+	initVisibility(){
+		var visibilityConfig = "all";
+		var visibilityParam = this.route.snapshot.queryParams.visibility;
+		if( visibilityParam && ['all', 'active', 'completed'].indexOf(visibilityParam) != -1)
+		{
+			visibilityConfig = visibilityParam;
+		}
+		this.visibility = visibilityConfig;
 	}
 
 }
