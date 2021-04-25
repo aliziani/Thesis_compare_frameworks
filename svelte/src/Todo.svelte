@@ -95,7 +95,7 @@
 				{#each filteredTodos as item, index}
 					<li class="todo" class:completed={item.completed}>
 						<div class="view" class:hidden={item.editing}>
-							<input id="item-{index}" class="toggle" bind:value={item.completed} type="checkbox" on:click={(e) => { backupTodoList();}} >
+							<input id="item-{index}" class="toggle" bind:value={item.completed} on:change={(e) => console.log(e)} type="checkbox" on:click={(e) => { backupTodoList();}} >
 							<label for="item-{index}" on:dblclick={(e) => { item.editing = true; backupTodoList(); }}>{item.text}</label>
 							<button class="destroy" on:click={() => removeFromList(index)}></button>
 						</div>
