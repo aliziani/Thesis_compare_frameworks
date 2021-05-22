@@ -10,13 +10,9 @@ We reference this project for it's design as it's proven satisfying visually and
 
 ## Angular
 
-CLI: ng
-
 Go to "angular" folder and read Readme.
 
 ## React
-
-CLI: npx
 
 Go to "react" folder and read Readme.
 
