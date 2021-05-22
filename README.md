@@ -11,14 +11,12 @@ We reference this project for it's design as it's proven satisfying visually and
 ## Angular
 
 CLI: ng
-Init time: 12 min
 
 Go to "angular" folder and read Readme.
 
 ## React
 
 CLI: npx
-Init time: 10 min
 
 Go to "react" folder and read Readme.
 
